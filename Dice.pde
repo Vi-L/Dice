@@ -16,13 +16,20 @@ void draw()
     int sum = 0;
     int numDice = 0;
     int numCounts[] = {0, 0, 0, 0, 0, 0}; // indices: 0-5 instead of 1-6
-    int longestStreak = 0; // TODO: track streak
+    int longestStreak = 0;
+    int currStreak = 0;
+    int prevNum = 0;
     
     for (int row = 50; row < height; row += 50) {
       for (int col = 10; col < width; col += 50) {
         Die d = new Die(col, row);
         d.roll();
         d.show();
+        
+        if (d.dieNum == prevNum) currStreak++;
+        else currStreak = 0;
+        if (currStreak > longestStreak) longestStreak = currStreak;
+        prevNum = d.dieNum;
         
         numCounts[d.dieNum - 1]++; // dieNum - 1 because array is 0-indexed
         sum += d.dieNum;
@@ -38,6 +45,7 @@ void draw()
     text("Sum of " + numDice + " dice rolls for this trial is: " + sum, 10, 20);
     text("Average of " + numTrials + " trials is: " + sumAvg, 10, 35);
     text("Most common number in this trial is: " + (indexOfMaxVal(numCounts) + 1), 400, 20); // index + 1 because array is 0-indexed
+    text("Longest streak for this trial is: " + (longestStreak+1) + " in a row", 400, 35);
     
 }
 void mousePressed()

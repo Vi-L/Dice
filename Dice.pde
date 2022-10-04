@@ -15,7 +15,7 @@ void draw()
     background(136, 250, 137); // light green
     int sum = 0;
     int numDice = 0;
-    int numCounts[] = {0, 0, 0, 0, 0, 0}; // indices: 0-5 instead of 1-6
+    int numCounts[] = new int[6]; // indices: 0-5 instead of 1-6
     int longestStreak = 0;
     int currStreak = 0;
     int prevNum = 0;

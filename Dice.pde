@@ -8,6 +8,7 @@ void setup()
 double sumAvg = 0;
 int totalSum = 0;
 int numTrials = 0;
+Die[] allDice = new Die[210]; // hardcoded to 210 for now
 void draw()
 {   
     fill(255);
@@ -26,6 +27,8 @@ void draw()
         d.roll();
         d.show();
         
+        allDice[numDice] = d;
+        
         if (d.dieNum == prevNum) currStreak++;
         else currStreak = 0;
         if (currStreak > longestStreak) longestStreak = currStreak;
@@ -36,23 +39,48 @@ void draw()
         numDice++;
       }
     }
+    for (int i = 0; i < allDice.length; i++) {
+      if ( isStreakStart(allDice, i, longestStreak) ) {
+        for (int j = i; j < i + longestStreak + 1; j++) {
+          fill(59, 59, 59, 150);
+          strokeWeight(0);
+          int w = 0;
+          if (j == i + longestStreak) w = 30;
+          else w = 50;
+          if (j < allDice.length) rect(allDice[j].dieX, allDice[j].dieY, w, 30);
+        }
+      }
+    }
     
     numTrials++;
     totalSum += sum;
     sumAvg = totalSum / numTrials;
     
     fill(180, 0, 15);
+    strokeWeight(1);
     text("Sum of " + numDice + " dice rolls for this trial is: " + sum, 10, 20);
     text("Average of " + numTrials + " trials is: " + sumAvg, 10, 35);
     text("Most common number in this trial is: " + (indexOfMaxVal(numCounts) + 1), 400, 20); // index + 1 because array is 0-indexed
-    text("Longest streak for this trial is: " + (longestStreak+1) + " in a row", 400, 35);
+    text("Longest streak for this trial is: " + (longestStreak+1) + " in a row (highlighted)", 400, 35);
     
 }
 void mousePressed()
 {
     redraw();
 }
-int indexOfMaxVal(int arr[]) {
+
+boolean isStreakStart(Die[] arr, int index, int streakLength) {
+  if (index == arr.length - 1) return false;
+  for (int i = index; i < index + streakLength; i++) {
+    if (i + 1 >= arr.length) return false;
+     if (arr[i].dieNum != arr[i + 1].dieNum) {
+       return false;
+    }
+  }
+  return true;
+}
+
+int indexOfMaxVal(int[] arr) {
   int maxIndex = 0;
   int maxVal = -1;
   for (int i = 0; i < arr.length; i++) {
